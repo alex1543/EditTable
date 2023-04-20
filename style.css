@@ -1,0 +1,246 @@
+body {
+    font-family: Lato, "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", Verdana, Tahoma, sans-serif;
+    margin: 0;
+    padding: 0;
+    color: #333;
+    background: #fff;
+}
+
+aside {
+	width: 234px;
+    background: #333;
+    position: fixed;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    overflow-x: hidden;
+    overflow-y: scroll;
+}
+ul {
+	list-style: none;
+	padding-left: 0;
+
+}
+ul li div, ul li div:link, ul li div:active, ul li div:visited {
+    color: #ccc;
+	padding: 0.5rem 1.4375rem;
+    display: block;
+	text-decoration: none;
+	cursor: pointer;
+}
+ul li div:hover {
+    color: #fff;
+}
+ul li:first-child a {
+	color: #ddd;
+    font-weight: 700;
+	font-size: 1.5rem;
+	padding: 0.5rem 1.4375rem;
+    display: block;
+	text-decoration: none;
+}
+article {
+    margin-left: 234px;
+    padding: 0 2rem;
+    -webkit-padding-start: 1.5rem;
+}
+hr {
+	width: calc(100% - 1rem);
+    border: medium none;
+    border-bottom: 1px solid #7a7a7a;
+}
+
+canvas {
+	float: right;
+	cursor: pointer;
+	border-radius: 7px;
+	width: 25px;
+	height: 25px;
+	margin: 8px;
+}
+canvas:hover {
+	background: #ff4d4d;
+}
+canvas:active {
+	background: #ff0000;
+}
+
+table {
+	width: 100%;
+	margin-left: auto;
+    margin-right: auto;
+    text-align: left;
+	border-collapse: collapse;
+/*	table-layout: fixed;*/
+}
+
+table tr:first-child { 
+	font-weight: bold;
+}
+table tr:nth-child(n+2):hover {
+	color: #fff;
+	cursor: pointer;
+	font-weight: bold;
+}
+
+/* цвета таблиц от языка */
+.php tr:first-child { 
+	background: #4F5B93;
+}
+.php tr:nth-child(n+2) {
+	background: #7A86B8; 
+}
+.php tr:nth-child(n+2):hover {
+	background: #5b5bab;
+}
+.perl tr:first-child { 
+	background: #41b0a3;
+}
+.perl tr:nth-child(n+2) {
+	background: #84d1c8; 
+}
+.perl tr:nth-child(n+2):hover {
+	background: #61C5BA;
+}
+.python tr:first-child { 
+	background: #19629e;
+}
+.python tr:nth-child(n+2) {
+	background: #6aaee6; 
+}
+.python tr:nth-child(n+2):hover {
+	background: #2080cd;
+}
+/* цвета справа от выбора языка */
+.php_bt {
+    background: #4F5B93;
+}
+.perl_bt {
+    background: #61C5BA;
+}
+.python_bt {
+    background: #19629e;
+}
+
+td {
+	padding: 5px;
+    position: relative;
+    border: 1px solid #333;
+    height: 20px;
+}
+.id {
+	color: #fff;
+	text-align: center;
+	min-width: 25px;
+}
+
+.block p:first-child {
+	font-weight: bold;
+	font-size: 1.6rem;
+
+}
+.block p:nth-child(n+2) {
+	font-weight: bold;
+	font-size: 1.3rem;
+
+}
+.point p {
+	font-weight: bold;
+	font-size: 1.3rem;
+	display: inline;
+	padding-left: 15px;
+}
+.point {
+	padding-top: 18px;
+	display: inline-block;
+	width: 100%;
+}
+
+.noselect {
+  -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+     -khtml-user-select: none; /* Konqueror HTML */
+       -moz-user-select: none; /* Old versions of Firefox */
+        -ms-user-select: none; /* Internet Explorer/Edge */
+            user-select: none; /* Non-prefixed version, currently
+                                  supported by Chrome, Edge, Opera and Firefox */
+}
+
+.block div input[type=text], .block div select {
+	font-size: 15px;
+	font-weight: bold;
+}
+
+.block_half {
+	float: left;
+	width: 300px;
+}
+.block_half:nth-child(3) div {
+	color: #43853d;
+	background: #f0f0f0;
+	padding: 0.5rem 1.1rem;
+	cursor: pointer;
+	font-weight: bold;
+/*    font-size: 21px;*/
+	transition: background .24s ease;
+}
+.block_half:nth-child(2) div div {
+	width: 70px;
+    display: inline-block;
+	text-align: right;
+    padding-right: 5px;
+}
+
+.block_half:nth-child(3) div:hover {
+	color: #fff;
+	background: linear-gradient(90deg, rgba(64,200,89,0.5550595238095238) 26%, rgba(101,173,82,0.37298669467787116) 77%);
+	border-radius: 5px;
+}
+.block_half:nth-child(2) div {
+	margin: 1px;
+}
+#tBase {
+	width: 80px;
+}
+#tServ {
+	width: 85px;
+}
+#tPort {
+	width: 35px;
+}
+#tLogin {
+	width: 65px;
+}
+#tPassword {
+	width: 75px;
+}
+#tLanguage {
+	width: 125px;
+}
+#tColor {
+	width: 25px;
+    height: 25px;
+    display: inline-block;
+    border: 1px solid #333;
+	margin-left: 5px;
+}
+
+
+input[type=button] {
+	margin: 5px;
+    padding: 0 20px;
+	font-size: 1.5rem;
+    line-height: 39px;
+	background: linear-gradient(#4fb7f0,#29a0e0 60%,#29a0e0 90%,#36a6e2);
+    border-radius: 5px;
+	cursor: pointer;
+}
+
+input[type=button]:hover {
+color: #fff;
+	background: linear-gradient(#4aace1,#2690c9 60%,#2690c9 90%,#2f95cb);
+}
+
+iframe {
+	display: none;
+}
