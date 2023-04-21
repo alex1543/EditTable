@@ -19,7 +19,7 @@
 
 <ul>
 	<li>
-		<a href=".">Settings</a>
+		<a href="index.html">Settings</a>
 	</li>
 	<hr />
 	<li>
@@ -46,21 +46,27 @@
 		<p>Редактор таблиц EditTable</p>
 		<div class='block_half'>
 			<p>Настройки</p>
-			<div><div>Тип: </div><select id="tBase" disabled="disabled" ><option>MySQL</option></select></div>
+			<div><div>Тип: </div><select id="tBase"><option>MySQL</option><option>MSSQL</option></select></div>
 			<div><div>Адрес: </div><input type="text" id="tServ" value="localhost" /></div>
 			<div><div>Порт: </div><input type="text" id="tPort" value="3306" /></div>
 			<div><div>Логин: </div><input type="text" id="tLogin" value="root" /></div>
 			<div><div>Пароль: </div><input type="text" id="tPassword" value="" /></div>
 			<div><div>Язык: </div><select id="tLanguage"><option>PHP (PDO)</option><option>PHP mysqli</option><option>Perl</option><option>Python</option></select><div id="tColor" title="Цвет">&nbsp;</div></div>
+			<div><div>Строк: </div><input type="text" id="tTop" value="1000" /></div>
 			<div><div>&nbsp;</div><input type="button" id="tCheck" value="Check" /></div>
 		</div>
-		<div class='block_half' id="iListBaseHead">&nbsp;</div>	
+		<div class='block_half'><p>Список баз данных</p><div id="iListBaseHead">&nbsp;</div></div>	
 	
 	</div>
 </article>
 
 <script type="text/javascript">
 
+// установка порта по умолчанию.
+tBase.addEventListener('change', function () {
+	var aPorts = [3306,1433];
+	tPort.value = aPorts[tBase.selectedIndex];
+});
 // установка индикатора цвета справа от языка независимо ни от чего.
 SetColorIndicator();
 function SetColorIndicator() {
@@ -82,11 +88,11 @@ tCheck.addEventListener('click', function () {
 
 	var iListBaseHead = document.getElementById('iListBaseHead');
 	iListBaseHead.style.display = 'block';
-	iListBaseHead.innerHTML = '<p>Список баз данных</p>';
+	iListBaseHead.innerHTML = 'Loading...';
 
 	var iframe = document.createElement('iframe');
 	iListBaseHead.after(iframe);
-	iframe.src = './dync.php?bases&address='+tServ.value+'&port='+tPort.value+'&login='+tLogin.value+'&password='+tPassword.value;
+	iframe.src = './dync.php?bases&type='+tBase.value+'&address='+tServ.value+'&port='+tPort.value+'&login='+tLogin.value+'&password='+tPassword.value;
 console.log(iframe.src);
 
 	var innerDoc = iframe.contentDocument;
@@ -98,13 +104,13 @@ console.log(iframe.src);
 			var innerDoc = iframe.contentDocument;
 			if ((innerDoc != undefined) && (innerDoc.getElementById('iListStatus') != undefined)) {
 				var iTableGet = innerDoc.getElementById('iTableGet');
-				iListBaseHead.innerHTML += iTableGet.innerHTML;
+				iListBaseHead.innerHTML = iTableGet.innerHTML;
 				iframe.remove();
 				GetListTable();
 			} else {
 
 				if (iLoadPos >= 1500) {
-					iListBaseHead.innerHTML += 'Данные не были получены за отведенное время (5 сек.). Проверьте связь в локальной сети. Повторите попытку позже. Обратитесь к системному администратору.';
+					iListBaseHead.innerHTML = 'Данные не были получены за отведенное время (5 сек.). Проверьте связь в локальной сети. Повторите попытку позже. Обратитесь к системному администратору.';
 					iframe.remove();
 				} else {
 					iLoadPos++;
@@ -126,11 +132,11 @@ console.log(iframe.src);
 				return function() {
 				console.log(mBase[i].innerHTML);
 				iListTableUL = document.getElementsByTagName('UL')[0];
-				iListTableUL.innerHTML = '<li><a href=".">Settings</a></li><hr />';
+				iListTableUL.innerHTML = '<li><a href="index.html">Settings</a></li><hr />';
 
 				var iframe = document.createElement('iframe');
 				iListTableUL.after(iframe);
-				iframe.src = './dync.php?tables='+mBase[i].innerHTML+'&address='+tServ.value+'&port='+tPort.value+'&login='+tLogin.value+'&password='+tPassword.value;
+				iframe.src = './dync.php?tables='+mBase[i].innerHTML+'&type='+tBase.value+'&address='+tServ.value+'&port='+tPort.value+'&login='+tLogin.value+'&password='+tPassword.value;
 				console.log(iframe.src);
 
 				var innerDoc = iframe.contentDocument;
@@ -144,7 +150,7 @@ console.log(iframe.src);
 							var iTableGet = innerDoc.getElementById('iTableGet');
 							iListTableUL.innerHTML += iTableGet.innerHTML;
 							iframe.remove();
-							GetShowTables(i);
+							GetShowTables(i+1);
 				//
 						} else {
 
@@ -190,11 +196,11 @@ console.log(iActBase);
 			sTable = actNav.innerHTML;
 			sBase = document.getElementById('iBase'+iActBase).innerHTML;
 
-			newDiv.innerHTML = '<p>'+tLanguage.value+': '+sBase+'.'+sTable+'</p>';
+			newDiv.innerHTML = '<p id="tblHeader'+nBlock+'">'+tLanguage.value+': '+sBase+'.'+sTable+' (Loading...)</p>';
 	
 ////	
 
-	sRequest = './dync.php?rows='+sBase+'.'+sTable+'&address='+tServ.value+'&port='+tPort.value+'&login='+tLogin.value+'&password='+tPassword.value;
+	sRequest = './dync.php?rows='+sBase+'.'+sTable+'&base='+sBase+'&top='+tTop.value+'&type='+tBase.value+'&address='+tServ.value+'&port='+tPort.value+'&login='+tLogin.value+'&password='+tPassword.value;
 	newDiv.innerHTML += '<table id="table'+nBlock+'">&nbsp;</table>';
 	GetDyncArray(sRequest, nBlock);
 ////
@@ -217,6 +223,7 @@ console.log(iActBase);
 }
 
 function GetDyncArray(sRequest, iTable) {
+	var timeIn = new Date();
 	var iframe = document.createElement('iframe');
 	document.getElementsByTagName('body')[0].after(iframe);
 	iframe.src = sRequest;
@@ -235,7 +242,7 @@ function GetDyncArray(sRequest, iTable) {
 				iframe.remove();
 
 				for (const child of newTable.children[0].children[0].children) {
-					if (~child.innerHTML.indexOf("id")) {
+					if (~child.innerHTML.toLowerCase().indexOf("id")) {
 						child.classList.add('id');
 						console.log(child.innerHTML);
 					}
@@ -253,6 +260,16 @@ function GetDyncArray(sRequest, iTable) {
 						grandchild.innerHTML = HtmlEncode(grandchild.innerHTML);
 					}
 				}
+				
+				cRows = newTable.children[0].children.length-1;
+				cCols = newTable.children[0].children[0].children.length;
+				oStr = document.getElementById('tblHeader'+iTable);
+				
+				var timeOut = new Date();
+				var timeDiff = timeOut - timeIn;
+				nwstr = oStr.innerHTML.replace(' (Loading...)', ' ('+cRows+'x'+cCols+', '+timeDiff+' ms.)');
+				oStr.innerHTML = nwstr;
+			//	alert(document.getElementById('tblHeader'+iTable).innerHTML);
 
 				
 			} else {

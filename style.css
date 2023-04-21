@@ -175,7 +175,7 @@ td {
 	float: left;
 	width: 300px;
 }
-.block_half:nth-child(3) div {
+.block_half:nth-child(3) div div {
 	color: #43853d;
 	background: #f0f0f0;
 	padding: 0.5rem 1.1rem;
@@ -191,7 +191,7 @@ td {
     padding-right: 5px;
 }
 
-.block_half:nth-child(3) div:hover {
+.block_half:nth-child(3) div div:hover {
 	color: #fff;
 	background: linear-gradient(90deg, rgba(64,200,89,0.5550595238095238) 26%, rgba(101,173,82,0.37298669467787116) 77%);
 	border-radius: 5px;
@@ -199,6 +199,13 @@ td {
 .block_half:nth-child(2) div {
 	margin: 1px;
 }
+
+#iListBaseHead {
+	overflow-x: hidden;
+    overflow-y: scroll;
+    height: 247px;	
+}
+
 #tBase {
 	width: 80px;
 }
@@ -224,7 +231,9 @@ td {
     border: 1px solid #333;
 	margin-left: 5px;
 }
-
+#tTop {
+	width: 60px;
+}
 
 input[type=button] {
 	margin: 5px;
