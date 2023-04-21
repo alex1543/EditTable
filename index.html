@@ -7,7 +7,50 @@
 </head>
 
 <style>
+.WindowHidden {
+   display: none;
+   position: fixed;
+   top: 0;
+   left: 0;
+   width: 100%;
+   height: 100%;
+   background-color: rgba(0, 0, 0, .5);
+   z-index: 1;
+   transition: .3s all;	
+}
+.WindowHidden div {
+   width: 100%;
+   max-width: 580px;
+   position: fixed;
+   top: 50%;
+   left: 50%;
+   transform: translate(-50%, -50%);
+   z-index: 2;
+   
+   box-shadow: 0 3px 10px -.5px rgba(0, 0, 0, .2); 
+   text-align: center;
+   padding: 30px;
+   border-radius: 3px;
+   background-color: #fff;
+   transition: 0.3s all;
+}
+.WindowHidden div p {
+    font-weight: bold;
+    font-size: 1.6rem;	
+}
 
+textarea {
+	width: 520px;
+    height: 220px;
+	font-size: 1.2rem;
+	resize: none;
+    border: 2px dashed black;
+}
+.edit {
+	color: #fff;
+	background: #5966a1;
+	font-weight: bold;
+}
 </style>
 
 <body>
@@ -57,6 +100,13 @@
 		</div>
 		<div class='block_half'><p>Список баз данных</p><div id="iListBaseHead">&nbsp;</div></div>	
 	
+	</div>
+	<div class="WindowHidden">
+		<div class="WindowUpdate">
+			<p>Отредактируйте значение:</p>
+			<textarea>&nbsp;</textarea><br /><br />
+			<input type="button" id="tUpdate" value="Update" />
+		</div>
 	</div>
 </article>
 
@@ -254,9 +304,53 @@ function GetDyncArray(sRequest, iTable) {
 					s = el.innerHTML;
 					return s;
 				}
+				
+				var iRow = -1;
 				for (const child of newTable.children[0].children) {
+					iRow++;
+					iCol = -1;
 					for (const grandchild of child.children) {
-					console.log(grandchild.innerHTML);
+						iCol++;
+			grandchild.onclick = function(iTable, iRow, iCol){
+			return function() {
+var newTable = document.getElementById('table'+iTable);
+var sValue = newTable.children[0].children[iRow].children[iCol].innerHTML;
+document.getElementsByTagName('textarea')[0].value = sValue;
+document.getElementsByClassName('WindowHidden')[0].style.display = 'block';
+//alert(iTable+'-'+iRow+'-'+iCol);
+
+tUpdate.onclick = function(iTable, iRow, iCol){
+return function() {
+var newTable = document.getElementById('table'+iTable);
+var sValue = document.getElementsByTagName('textarea')[0].value;
+
+// формирование строки для запроса.
+var sRqPlus = '&pmP='+newTable.children[0].children[0].children[iCol].innerHTML;
+sRqPlus += '&pmV='+sValue;
+for (var i = 0; i < newTable.children[0].children[0].children.length; ++i) {
+	sRqPlus += '&pP'+i+'='+newTable.children[0].children[0].children[i].innerHTML;
+	sRqPlus += '&pV'+i+'='+newTable.children[0].children[iRow].children[i].innerHTML;
+}
+//alert(sRqPlus);
+
+sRequest = './dync.php?update='+sBase+'.'+sTable+'&base='+sBase+'&type='+tBase.value+'&address='+tServ.value+'&port='+tPort.value+'&login='+tLogin.value+'&password='+tPassword.value+sRqPlus;
+var iframe = document.createElement('iframe');
+document.getElementsByTagName('body')[0].after(iframe);
+iframe.src = sRequest;
+
+// визуальное присваивание в таблице на экране.
+oCellEdit = newTable.children[0].children[iRow].children[iCol];
+oCellEdit.innerHTML = sValue;
+oCellEdit.classList.add('edit');
+document.getElementsByClassName('WindowHidden')[0].style.display = 'none';
+//alert(sValue);
+
+}
+}(iTable, iRow, iCol);
+			
+			}
+			}(iTable, iRow, iCol);				
+					//console.log(grandchild.innerHTML);
 						grandchild.innerHTML = HtmlEncode(grandchild.innerHTML);
 					}
 				}
@@ -284,6 +378,21 @@ function GetDyncArray(sRequest, iTable) {
 		}, 1);	
 	}
 }
+
+// окно закроется, если кликнуть на любую область вокруг окна.
+var iWindowHidden = document.getElementsByClassName('WindowHidden')[0];
+iWindowHidden.addEventListener('click', function () {
+	var iWindowUpdate = document.getElementsByClassName('WindowUpdate')[0];
+	var iWindowHidden = document.getElementsByClassName('WindowHidden')[0];
+	// проверка области окна.
+	e = event || window.event;
+	if (((e.clientX+window.pageYOffset > iWindowUpdate.getBoundingClientRect().left) &&
+		(e.clientX+window.pageYOffset < iWindowUpdate.getBoundingClientRect().left+iWindowUpdate.getBoundingClientRect().width)) &&
+		((e.clientY+window.pageYOffset > iWindowUpdate.getBoundingClientRect().top) &&
+		(e.clientY+window.pageYOffset < iWindowUpdate.getBoundingClientRect().top+iWindowUpdate.getBoundingClientRect().height))) return;
+
+	iWindowHidden.style.display = 'none';
+});
 
 // кретик для закрытия таблицы.
 function CloseButtonBlock(nTable) {

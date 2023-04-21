@@ -19,6 +19,23 @@ try {
 	print "Error!: " . $e->getMessage() . "<br/>";
 	die();
 }
+
+// обновление 1 ячейки в одной строке.
+if (isset($_GET['update'])) {
+	$sql = "UPDATE ".$_GET['update']." SET ".$_GET['pmP'].'='.$_GET['pmV']." WHERE ";
+	
+	for ($i = 0; isset($_GET['pP'.$i]); ++$i) {
+		$sql .= $_GET['pP'.$i].'='.$_GET['pV'.$i].' AND ';
+	}
+	$sql .= '1=1';
+	
+	echo $sql;
+	$stmt = $pdoSet->query($sql);
+
+	die();
+	
+}
+
 // список баз на одном экз. сервера.
 if (isset($_GET['bases'])) {
 	if ($_GET['type'] == 'MySQL')
