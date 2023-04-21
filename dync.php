@@ -19,19 +19,21 @@ try {
 	print "Error!: " . $e->getMessage() . "<br/>";
 	die();
 }
-// динамическое получение значений из базы данных.
+// список таблиц.
 if (isset($_GET['bases'])) {
 	if ($_GET['type'] == 'MySQL')
 		$sql = "SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA";
 	if ($_GET['type'] == 'MSSQL')
 		$sql = "EXEC sp_databases";
 }
+// список таблиц.
 if (isset($_GET['tables'])) {
 	if ($_GET['type'] == 'MySQL')
 		$sql = "SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA='".$_GET['tables']."'";
 	if ($_GET['type'] == 'MSSQL')
 		$sql = "SELECT TABLE_SCHEMA+'.'+TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_CATALOG='".$_GET['tables']."'";
 }
+// список столбцов и строк.
 if (isset($_GET['rows'])) {
 	if ($_GET['type'] == 'MySQL')
 		$sql_cols = "SHOW COLUMNS FROM ".$_GET['rows'];
@@ -40,9 +42,13 @@ if (isset($_GET['rows'])) {
 	
 //echo $sql_cols;
 	
-	$sql = "SELECT TOP ".$_GET['top']." * FROM ".$_GET['rows'];
+	if ($_GET['type'] == 'MySQL')
+		$sql = "SELECT * FROM ".$_GET['rows']." LIMIT ".$_GET['top'];
+	if ($_GET['type'] == 'MSSQL')
+		$sql = "SELECT TOP ".$_GET['top']." * FROM ".$_GET['rows'];
 //echo $sql;
 }
+// динамическое получение значений из базы данных.
 ?><!DOCTYPE html><html><head></head><body><div id='iTableGet'><?php
 if (isset($_GET['rows'])) {
 	echo '<table><tr>';
@@ -51,7 +57,17 @@ if (isset($_GET['rows'])) {
 	for ($i = 0; $i < Count($resultMF); ++$i) echo '<td>'.$resultMF[$i]["Field"].'</td>';
 	echo '</tr>';
 }
-$stmt = $pdoSet->query($sql);
+try {
+	$stmt = $pdoSet->query($sql);
+	// не все MSSQL поддерживают TOP.
+	if ((!$stmt) && ($_GET['type'] == 'MSSQL')) {
+		$sql = "SELECT * FROM ".$_GET['rows'];
+		$stmt = $pdoSet->query($sql);
+	//	echo $sql;
+	}
+} catch (PDOException $e) {
+	print "Error!: " . $e->getMessage() . "<br/>";
+}
 $resultMF = $stmt->fetchAll(PDO::FETCH_NUM);
 // перебор двухмерного массива [][] с числ. индексами.
 for ($i = 0; $i < Count($resultMF); ++$i) {
