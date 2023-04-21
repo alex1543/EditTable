@@ -5,7 +5,9 @@ body {
     color: #333;
     background: #fff;
 }
-
+header, nav {
+    height: 0;
+}
 aside {
 	width: 234px;
     background: #333;
