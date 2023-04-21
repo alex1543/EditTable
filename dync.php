@@ -19,7 +19,7 @@ try {
 	print "Error!: " . $e->getMessage() . "<br/>";
 	die();
 }
-// список таблиц.
+// список баз на одном экз. сервера.
 if (isset($_GET['bases'])) {
 	if ($_GET['type'] == 'MySQL')
 		$sql = "SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA";
