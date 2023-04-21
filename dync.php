@@ -22,12 +22,12 @@ try {
 
 // обновление 1 ячейки в одной строке.
 if (isset($_GET['update'])) {
-	$sql = "UPDATE ".$_GET['update']." SET ".$_GET['pmP'].'='.$_GET['pmV']." WHERE ";
+	$sql = "UPDATE ".$_GET['update']." SET ".$_GET['pmP']."='".$_GET['pmV']."' WHERE ";
 	
 	for ($i = 0; isset($_GET['pP'.$i]); ++$i) {
-		$sql .= $_GET['pP'.$i].'='.$_GET['pV'.$i].' AND ';
+		$sql .= $_GET['pP'.$i]."='".$_GET['pV'.$i]."' AND ";
 	}
-	$sql .= '1=1';
+	$sql .= "1=1";
 	
 	echo $sql;
 	$stmt = $pdoSet->query($sql);

@@ -387,10 +387,9 @@ iWindowHidden.addEventListener('click', function () {
 	var iWindowHidden = document.getElementsByClassName('WindowHidden')[0];
 	// проверка области окна.
 	e = event || window.event;
-	if (((e.clientX+window.pageYOffset > iWindowUpdate.getBoundingClientRect().left) &&
-		(e.clientX+window.pageYOffset < iWindowUpdate.getBoundingClientRect().left+iWindowUpdate.getBoundingClientRect().width)) &&
-		((e.clientY+window.pageYOffset > iWindowUpdate.getBoundingClientRect().top) &&
-		(e.clientY+window.pageYOffset < iWindowUpdate.getBoundingClientRect().top+iWindowUpdate.getBoundingClientRect().height))) return;
+	oRect = iWindowUpdate.getBoundingClientRect();
+	if (((e.clientX-window.pageXOffset > oRect.left-window.pageXOffset) && (e.clientX-window.pageXOffset < oRect.left+oRect.width-window.pageXOffset)) &&
+		((e.clientY-window.pageYOffset > oRect.top-window.pageYOffset) && (e.clientY-window.pageYOffset < oRect.top+oRect.height-window.pageYOffset))) return;
 
 	iWindowHidden.style.display = 'none';
 });
