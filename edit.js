@@ -176,9 +176,6 @@ function GetDyncArray(sRequest, iTable) {
 			if ((innerDoc != undefined) && (innerDoc.getElementById('iListStatus') != undefined)) {
 				var newTable = document.getElementById('table'+iTable);
 				newTable.innerHTML = innerDoc.getElementById('iTableGet').innerHTML;
-				var iCountCols = innerDoc.getElementById('iCountCols').innerHTML;
-				var iCountRows = innerDoc.getElementById('iCountRows').innerHTML;
-				console.log(iCountCols+'x'+iCountRows);
 				iframe.remove();
 
 				for (const child of newTable.children[0].children[0].children) {
@@ -247,13 +244,13 @@ function GetDyncArray(sRequest, iTable) {
 					}
 				}
 				
-			//	iCountRows = newTable.children[0].children.length-1;
-			//	iCountCols = newTable.children[0].children[0].children.length;
+				cRows = newTable.children[0].children.length-1;
+				cCols = newTable.children[0].children[0].children.length;
 				oStr = document.getElementById('tblHeader'+iTable);
 				
 				var timeOut = new Date();
 				var timeDiff = timeOut - timeIn;
-				nwstr = oStr.innerHTML.replace(' (Loading...)', ' ('+iCountRows+'x'+iCountCols+', '+timeDiff+' ms.)');
+				nwstr = oStr.innerHTML.replace(' (Loading...)', ' ('+cRows+'x'+cCols+', '+timeDiff+' ms.)');
 				oStr.innerHTML = nwstr;
 			//	alert(document.getElementById('tblHeader'+iTable).innerHTML);
 
