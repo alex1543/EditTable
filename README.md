@@ -21,4 +21,4 @@
 
 ![image](https://user-images.githubusercontent.com/10297748/233806376-c619a10f-9550-4049-a13a-dcaf197985e3.png)
 
-Модуль сайта гарантированно работает на perl 5, version 32, subversion 1 (v5.32.1) built for MSWin32-x64-multi-thread. Необходимо доустановить компонент DBI с помощью команды install DBI в каталоге с Perl.
+Модуль сайта гарантированно работает на perl 5, version 32, subversion 1 (v5.32.1) built for MSWin32-x64-multi-thread. Необходимо доустановить компонент DBI с помощью команды cpan, а потом install DBI в каталоге с Perl.
