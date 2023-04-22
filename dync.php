@@ -25,7 +25,10 @@ if (isset($_GET['update'])) {
 	$sql = "UPDATE ".$_GET['update']." SET ".$_GET['pmP']."='".$_GET['pmV']."' WHERE ";
 	
 	for ($i = 0; isset($_GET['pP'.$i]); ++$i) {
-		$sql .= $_GET['pP'.$i]."='".$_GET['pV'.$i]."' AND ";
+		$spV = $_GET['pP'.$i]."= '".$_GET['pV'.$i]."'";
+		if ($_GET['pV'.$i] == 'NULL') $spV = '('.$_GET['pP'.$i].' IS NULL)';
+		
+		$sql .= $spV." AND ";
 	}
 	$sql .= "1=1";
 	
@@ -42,6 +45,13 @@ if (isset($_GET['bases'])) {
 		$sql = "SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA";
 	if ($_GET['type'] == 'MSSQL')
 		$sql = "EXEC sp_databases";
+	
+	$stmt = $pdoSet->query($sql);
+	$resultMF = $stmt->fetchAll(PDO::FETCH_NUM);
+	// перебор двухмерного массива [][] с числ. индексами.
+	$divBases = '';	for ($i = 0; $i < Count($resultMF); ++$i) $divBases .= '<div>'.$resultMF[$i][0].'</div>';
+	GetDOM($divBases);
+	die();
 }
 // список таблиц.
 if (isset($_GET['tables'])) {
@@ -49,59 +59,65 @@ if (isset($_GET['tables'])) {
 		$sql = "SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA='".$_GET['tables']."'";
 	if ($_GET['type'] == 'MSSQL')
 		$sql = "SELECT TABLE_SCHEMA+'.'+TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_CATALOG='".$_GET['tables']."'";
+
+	$stmt = $pdoSet->query($sql);
+	$resultMF = $stmt->fetchAll(PDO::FETCH_NUM);
+	// перебор двухмерного массива [][] с числ. индексами.
+	$divTables = ''; for ($i = 0; $i < Count($resultMF); ++$i) $divTables .= '<li><div class="nav_point">'.$resultMF[$i][0].'</div></li>';
+	GetDOM($divTables);
+	die();
 }
 // список столбцов и строк.
 if (isset($_GET['rows'])) {
+	?><!DOCTYPE html><html><head></head><body><div id='iTableGet'><?php
 	if ($_GET['type'] == 'MySQL')
 		$sql_cols = "SHOW COLUMNS FROM ".$_GET['rows'];
 	if ($_GET['type'] == 'MSSQL')
 		$sql_cols = "SELECT COLUMN_NAME AS Field FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_CATALOG+'.'+TABLE_SCHEMA+'.'+TABLE_NAME = '".$_GET['rows']."'";
 	
-//echo $sql_cols;
-	
-	if ($_GET['type'] == 'MySQL')
-		$sql = "SELECT * FROM ".$_GET['rows']." LIMIT ".$_GET['top'];
-	if ($_GET['type'] == 'MSSQL')
-		$sql = "SELECT TOP ".$_GET['top']." * FROM ".$_GET['rows'];
-//echo $sql;
-}
-// динамическое получение значений из базы данных.
-?><!DOCTYPE html><html><head></head><body><div id='iTableGet'><?php
-if (isset($_GET['rows'])) {
 	echo '<table><tr>';
 	$stmt = $pdoSet->query($sql_cols);
 	$resultMF = $stmt->fetchAll();
 	for ($i = 0; $i < Count($resultMF); ++$i) echo '<td>'.$resultMF[$i]["Field"].'</td>';
 	echo '</tr>';
-}
-try {
-	$stmt = $pdoSet->query($sql);
-	// не все MSSQL поддерживают TOP.
-	if ((!$stmt) && ($_GET['type'] == 'MSSQL')) {
-		$sql = "SELECT * FROM ".$_GET['rows'];
-		$stmt = $pdoSet->query($sql);
-	//	echo $sql;
-	}
-} catch (PDOException $e) {
-	print "Error!: " . $e->getMessage() . "<br/>";
-}
-$resultMF = $stmt->fetchAll(PDO::FETCH_NUM);
-// перебор двухмерного массива [][] с числ. индексами.
-for ($i = 0; $i < Count($resultMF); ++$i) {
-	if (isset($_GET['bases'])) echo '<div>'.$resultMF[$i][0].'</div>';
-	if (isset($_GET['tables']))	echo '<li><div class="nav_point">'.$resultMF[$i][0].'</div></li>';
+	
+	$iCountCols = Count($resultMF);
+	$stmt = $pdoSet->query("SELECT COUNT(*) FROM ".$_GET['rows']);
+	$resultMF = $stmt->fetchAll();
+	$iCountRows = $resultMF[0][0];
 
-	if (isset($_GET['rows'])) {
-		echo '<tr>';
-		for ($iCol = 0; $iCol < Count($resultMF[$i]); ++$iCol) {
-			if ($resultMF[$i][$iCol] != null) {
-				echo '<td>'.$resultMF[$i][$iCol].'</td>';
-			} else {
-				echo '<td>NULL</td>';
+	if ($iCountRows > 0) {
+		if ($_GET['type'] == 'MySQL')
+			$sql = "SELECT * FROM ".$_GET['rows']." LIMIT ".$_GET['top'];
+		if ($_GET['type'] == 'MSSQL')
+			$sql = "SELECT TOP ".$_GET['top']." * FROM ".$_GET['rows'];
+
+		$stmt = $pdoSet->query($sql);
+		// не все MSSQL поддерживают TOP.
+		if ((!$stmt) && ($_GET['type'] == 'MSSQL'))
+			$sql = "SELECT * FROM ".$_GET['rows'];
+
+		$resultMF = $stmt->fetchAll(PDO::FETCH_NUM);
+		// перебор двухмерного массива [][] с числ. индексами.
+		for ($i = 0; $i < Count($resultMF); ++$i) {
+			echo '<tr>';
+			for ($iCol = 0; $iCol < Count($resultMF[$i]); ++$iCol) {
+				if ($resultMF[$i][$iCol] != null) {
+					echo '<td>'.$resultMF[$i][$iCol].'</td>';
+				} else {
+					echo '<td>NULL</td>';
+				}
 			}
+			echo '</tr>';		
 		}
-		echo '</tr>';		
 	}
+	echo '</table>';
+	?></div><div id='iCountCols'><?php echo $iCountCols; ?></div>
+	<div id='iCountRows'><?php echo $iCountRows; ?></div>
+	<div id='iListStatus'>good</div></body></html><?php
 }
-if (isset($_GET['rows'])) echo '</table>';
-?></div><div id='iListStatus'>good</div></body></html>
+
+function GetDOM($sInner) {
+?><!DOCTYPE html><html><head></head><body><div id='iTableGet'><?php	echo $sInner;
+?></div><div id='iListStatus'>good</div></body></html><?php
+}
