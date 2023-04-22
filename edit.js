@@ -31,7 +31,7 @@ tCheck.addEventListener('click', function () {
 
 	var iframe = document.createElement('iframe');
 	iListBaseHead.after(iframe);
-	iframe.src = './'+GetLangFile()+'?bases&type='+tBase.value+'&address='+tServ.value+'&port='+tPort.value+'&login='+tLogin.value+'&password='+tPassword.value;
+	iframe.src = './'+GetLangFile()+'?bases=yes&type='+tBase.value+'&address='+tServ.value+'&port='+tPort.value+'&login='+tLogin.value+'&password='+tPassword.value;
 console.log(iframe.src);
 
 	var innerDoc = iframe.contentDocument;
