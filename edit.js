@@ -4,14 +4,13 @@ tBase.addEventListener('change', function () {
 	var aPorts = [3306,1433];
 	tPort.value = aPorts[tBase.selectedIndex];
 });
+let aLangFile = ['pdo.php','mysqli.php','perl.pl','python.py'];
+let aLangColor = ['php_bt','php_bt','perl_bt','python_bt'];
 // установка индикатора цвета справа от языка независимо ни от чего.
 SetColorIndicator();
 function SetColorIndicator() {
-	var lang_color = '';
 	var inxLang = tLanguage.selectedIndex;
-	if (inxLang <= 1) lang_color = 'php_bt';
-	if (inxLang == 2) lang_color = 'perl_bt';
-	if (inxLang == 3) lang_color = 'python_bt';
+	var lang_color = aLangColor[inxLang];
 
 	tColor.classList = '';
 	tColor.classList.add(lang_color);
@@ -19,6 +18,9 @@ function SetColorIndicator() {
 tLanguage.addEventListener('change', function () {
 	SetColorIndicator();
 });
+function GetLangFile() {
+	return aLangFile[tLanguage.selectedIndex];
+}
 
 // подгрузка списка баз данных по кнопке Check.
 tCheck.addEventListener('click', function () {
@@ -29,7 +31,7 @@ tCheck.addEventListener('click', function () {
 
 	var iframe = document.createElement('iframe');
 	iListBaseHead.after(iframe);
-	iframe.src = './dync.php?bases&type='+tBase.value+'&address='+tServ.value+'&port='+tPort.value+'&login='+tLogin.value+'&password='+tPassword.value;
+	iframe.src = './'+GetLangFile()+'?bases&type='+tBase.value+'&address='+tServ.value+'&port='+tPort.value+'&login='+tLogin.value+'&password='+tPassword.value;
 console.log(iframe.src);
 
 	var innerDoc = iframe.contentDocument;
@@ -73,7 +75,7 @@ console.log(iframe.src);
 
 				var iframe = document.createElement('iframe');
 				iListTableUL.after(iframe);
-				iframe.src = './dync.php?tables='+mBase[i].innerHTML+'&type='+tBase.value+'&address='+tServ.value+'&port='+tPort.value+'&login='+tLogin.value+'&password='+tPassword.value;
+				iframe.src = './'+GetLangFile()+'?tables='+mBase[i].innerHTML+'&type='+tBase.value+'&address='+tServ.value+'&port='+tPort.value+'&login='+tLogin.value+'&password='+tPassword.value;
 				console.log(iframe.src);
 
 				var innerDoc = iframe.contentDocument;
@@ -137,7 +139,7 @@ console.log(iActBase);
 	
 ////	
 
-	sRequest = './dync.php?rows='+sBase+'.'+sTable+'&base='+sBase+'&top='+tTop.value+'&type='+tBase.value+'&address='+tServ.value+'&port='+tPort.value+'&login='+tLogin.value+'&password='+tPassword.value;
+	sRequest = './'+GetLangFile()+'?rows='+sBase+'.'+sTable+'&base='+sBase+'&top='+tTop.value+'&type='+tBase.value+'&address='+tServ.value+'&port='+tPort.value+'&login='+tLogin.value+'&password='+tPassword.value;
 	newDiv.innerHTML += '<table id="table'+nBlock+'">&nbsp;</table>';
 	GetDyncArray(sRequest, nBlock);
 ////
@@ -196,9 +198,8 @@ function GetDyncArray(sRequest, iTable) {
 				}
 				
 				// перебор каждой ячейки в таблице на экране.
-				var iRow = -1;
-				for (const child of newTable.children[0].children) {
-					iRow++;
+				for (var iRow = 1; iRow < newTable.children[0].children.length; ++iRow) {
+					child = newTable.children[0].children[iRow];
 					iCol = -1;
 					for (const grandchild of child.children) {
 						iCol++;
@@ -225,7 +226,7 @@ function GetDyncArray(sRequest, iTable) {
 								}
 								//alert(sRqPlus);
 
-								sRequest = './dync.php?update='+sBase+'.'+sTable+'&base='+sBase+'&type='+tBase.value+'&address='+tServ.value+'&port='+tPort.value+'&login='+tLogin.value+'&password='+tPassword.value+sRqPlus;
+								sRequest = './'+GetLangFile()+'?update='+sBase+'.'+sTable+'&base='+sBase+'&type='+tBase.value+'&address='+tServ.value+'&port='+tPort.value+'&login='+tLogin.value+'&password='+tPassword.value+sRqPlus;
 								var iframe = document.createElement('iframe');
 								document.getElementsByTagName('body')[0].after(iframe);
 								iframe.src = sRequest;
