@@ -25,7 +25,10 @@ if (isset($_GET['update'])) {
 	$sql = "UPDATE ".$_GET['update']." SET ".$_GET['pmP']."='".$_GET['pmV']."' WHERE ";
 	
 	for ($i = 0; isset($_GET['pP'.$i]); ++$i) {
-		$sql .= $_GET['pP'.$i]."='".$_GET['pV'.$i]."' AND ";
+		$spV = $_GET['pP'.$i]."= '".$_GET['pV'.$i]."'";
+		if ($_GET['pV'.$i] == 'NULL') $spV = '('.$_GET['pP'.$i].' IS NULL)';
+		
+		$sql .= $spV." AND ";
 	}
 	$sql .= "1=1";
 	
