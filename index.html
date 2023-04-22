@@ -1,78 +1,76 @@
 <!DOCTYPE html>
 <html lang="ru">
-<head>
-  <meta charset="utf-8" />
-  <title>Редактор таблиц EditTable</title>
-  <link rel="stylesheet" href="style.css" />
-</head>
+	<head>
+		<meta charset="utf-8" />
+		<title>Редактор таблиц EditTable</title>
+		<link rel="stylesheet" href="style.css" />
+	</head>
 
-<style>
+	<style>
 
-</style>
+	</style>
 
-<body>
+	<body>
 
-<header>&nbsp;</header>
-<nav>&nbsp;</nav>
+	<header>&nbsp;</header>
+	<nav>&nbsp;</nav>
 
-<aside>
+	<aside>
+		<ul>
+			<li>
+				<a href="index.html">Settings</a>
+			</li>
+			<hr />
+			<li>
+				<div class="nav_point">Point 1</div>
+			</li>
+			<li>
+				<div class="nav_point">Point 2</div>
+			</li>
+			<li>
+				<div class="nav_point">Point 3</div>
+			</li>
+			<li>
+				<div class="nav_point">Point 4</div>
+			</li>
+			<li>
+				<div class="nav_point">Point 5</div>
+			</li>
+		<ul>
+	</aside>
 
-<ul>
-	<li>
-		<a href="index.html">Settings</a>
-	</li>
-	<hr />
-	<li>
-		<div class="nav_point">Point 1</div>
-	</li>
-	<li>
-		<div class="nav_point">Point 2</div>
-	</li>
-	<li>
-		<div class="nav_point">Point 3</div>
-	</li>
-	<li>
-		<div class="nav_point">Point 4</div>
-	</li>
-	<li>
-		<div class="nav_point">Point 5</div>
-	</li>
-<ul>
-
-</aside>
-
-<article>
-	<div class="block">
-		<p>Редактор таблиц EditTable</p>
-		<div class='block_half'>
-			<p>Настройки</p>
-			<div><div>Тип: </div><select id="tBase"><option>MySQL</option><option>MSSQL</option></select></div>
-			<div><div>Адрес: </div><input type="text" id="tServ" value="localhost" /></div>
-			<div><div>Порт: </div><input type="text" id="tPort" value="3306" /></div>
-			<div><div>Логин: </div><input type="text" id="tLogin" value="root" /></div>
-			<div><div>Пароль: </div><input type="text" id="tPassword" value="" /></div>
-			<div><div>Язык: </div><select id="tLanguage"><option>PHP (PDO)</option><option>PHP mysqli</option><option>Perl</option><option>Python</option></select><div id="tColor" title="Цвет">&nbsp;</div></div>
-			<div><div>Строк: </div><input type="text" id="tTop" value="1000" /></div>
-			<div><div>&nbsp;</div><input type="button" id="tCheck" value="Check" /></div>
+	<article>
+		<div class="block">
+			<p>Редактор таблиц EditTable</p>
+			<div class='block_half'>
+				<p>Настройки</p>
+				<div><div>Тип: </div><select id="tBase"><option>MySQL</option><option>MSSQL</option></select></div>
+				<div><div>Адрес: </div><input type="text" id="tServ" value="localhost" /></div>
+				<div><div>Порт: </div><input type="text" id="tPort" value="3306" /></div>
+				<div><div>Логин: </div><input type="text" id="tLogin" value="root" /></div>
+				<div><div>Пароль: </div><input type="text" id="tPassword" value="" /></div>
+				<div><div>Язык: </div><select id="tLanguage"><option>PHP (PDO)</option><option>PHP MySQLi</option><option>Perl</option><option>Python</option></select><div id="tColor" title="Цвет">&nbsp;</div></div>
+				<div><div>Строк: </div><input type="text" id="tTop" value="1000" /></div>
+				<div><div>&nbsp;</div><input type="button" id="tCheck" value="Check" /></div>
+			</div>
+			<div class='block_half'><p>Список баз данных</p><div id="iListBaseHead">&nbsp;</div></div>	
+		
 		</div>
-		<div class='block_half'><p>Список баз данных</p><div id="iListBaseHead">&nbsp;</div></div>	
-	
-	</div>
-	<div class="WindowHidden">
-		<div class="WindowUpdate">
-			<p>Отредактируйте значение:</p>
-			<textarea>&nbsp;</textarea><br /><br />
-			<input type="button" id="tUpdate" value="Update" />
+		<div class="WindowHidden">
+			<div class="WindowUpdate">
+				<p>Отредактируйте значение:</p>
+				<textarea>&nbsp;</textarea><br /><br />
+				<input type="button" id="tUpdate" value="Update" />
+			</div>
 		</div>
-	</div>
-</article>
+	</article>
 
-<script type="text/javascript">
+	<script type="text/javascript">
 
-</script>
-<!-- HTML5 -->
-<script src="edit.js"></script>
-<footer>&nbsp;</footer>
- 
-</body>
+	</script>
+	<!-- HTML5 -->
+	<script src="edit.js"></script>
+	<footer>&nbsp;</footer>
+	 
+	</body>
 </html>
