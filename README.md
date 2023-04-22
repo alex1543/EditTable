@@ -14,3 +14,11 @@
 ![image](https://user-images.githubusercontent.com/10297748/233696115-d4051d01-3a54-4748-a651-1cc3be7bd8c8.png)
 
 Сайт гарантированно работает на ApacheFriends XAMPP Version 7.4.27 с предустановленным драйвером PDO и PHP версии 7.4.27.
+
+Сайт может работать и на Perl. Для этого необходимо установить strawberry-perl-5.32.1.1-64bit и добавить в переменную среды Path новый каталог C:\Strawberry\perl\bin\, куда был установлен Perl.
+
+Вид экрана при работе с таблицами через Perl.
+
+![image](https://user-images.githubusercontent.com/10297748/233806376-c619a10f-9550-4049-a13a-dcaf197985e3.png)
+
+Модуль сайта гарантированно работает на perl 5, version 32, subversion 1 (v5.32.1) built for MSWin32-x64-multi-thread
