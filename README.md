@@ -22,3 +22,9 @@
 ![image](https://user-images.githubusercontent.com/10297748/233806376-c619a10f-9550-4049-a13a-dcaf197985e3.png)
 
 Модуль сайта гарантированно работает на perl 5, version 32, subversion 1 (v5.32.1) built for MSWin32-x64-multi-thread. Необходимо доустановить компонент DBI с помощью команды cpan, а потом install DBI в каталоге с Perl.
+
+Поддерживается работа через Ruby. Внешний вид экрана:
+
+![image](https://user-images.githubusercontent.com/10297748/233828976-af11a004-3f1c-4742-96e6-3b569c631755.png)
+
+Для работы через Ruby, необходимо отредактировать первую строку в файле ruby.rb и заменить #!C:\Ruby32-x64\bin\ruby.exe на путь, где был установлен Ruby. Модуль гарантированно работает на ruby 3.2.2 (2023-03-30 revision e51014f9c0) [x64-mingw-ucrt].
