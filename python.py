@@ -16,6 +16,19 @@ if query_string is not None:
     top = d.get('top', [''])[0]
     update = d.get('update', [''])[0]
     
+    # параметры для ред. ячейки.
+    pmP = d.get('pmP', [''])[0]
+    pmV = d.get('pmV', [''])[0]
+    pP = []
+    pV = []
+    i=0
+    while d.get('pP'+str(i), [''])[0] != '':
+        s = d.get('pP'+str(i), [''])[0]
+        pP.append(s)
+        s = d.get('pV'+str(i), [''])[0]
+        pV.append(s)
+        i+=1
+    
 # работа с базой данных.
 import mysql.connector
 myconn = mysql.connector.connect(host = address, port = port, user = login, passwd = password, db = '', charset='cp1251', use_unicode = True)
@@ -23,24 +36,22 @@ cur = myconn.cursor()
 cur.execute("SET NAMES utf8")
 cur.execute("USE test")
 
+# обновление одной ячейки.
 if update != '':
     try:
-        sql=''; '''"UPDATE "+update+" SET "+pmP+"='"+pmV+"' WHERE ";
-	
-        i=0;
-        while cgi['pP'+i.to_s] != ''
-            sql += cgi['pP'+i.to_s]+"= '"+cgi['pV'+i.to_s]+"' AND "
+        sql="UPDATE "+update+" SET "+pmP+"='"+pmV+"' WHERE ";
+
+        i=0 
+        while i<len(pP):
+            sql += pP[i]+"='"+pV[i]+"' AND "
             i+=1
-        end
-        sql += "1=1";'''
+        sql += "1=1"
         print(sql)
         
         cur.execute(sql)
         myconn.commit()
     except: 
         myconn.rollback() 
-
-
 # список баз данных на 1 экз. сервера.
 if isGetBases != '':
     try:
