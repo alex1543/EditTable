@@ -1,62 +1,102 @@
-#! C:/Users/днс/AppData/Local/Programs/Python/Python38/python.exe
-
-print("Content-Type: text/html\n")
-
-# обновление, удаление строки в БД
+#!c:/Users/днс/AppData/Local/Programs/Python/Python38/python.exe
+print("Content-type: text/html; charset=utf-8\n\n")
+# разбор параметров GET.
 import os
 query_string = os.environ['QUERY_STRING']
-#from cgi import parse_qs, escape
-#d = parse_qs(environ['QUERY_STRING'])
-#address = d.get('address', [''])[0]
-#print(address)
-
-
 if query_string is not None:
     import urllib.parse
-    urlGets = urllib.parse.parse_qs(query_string)
-#address = urlGets.get('address', [''])[0]
-#print(address)    
+    d = urllib.parse.parse_qs(query_string)
+    address = d.get('address', [''])[0]
+    port = d.get('port', [''])[0]
+    login = d.get('login', [''])[0]
+    password = d.get('password', [''])[0]
+    isGetBases = d.get('bases', [''])[0]
+    base = d.get('tables', [''])[0]
+    rows = d.get('rows', [''])[0]
+    top = d.get('top', [''])[0]
+    update = d.get('update', [''])[0]
     
-    print(str(urlGets['bases']).replace('[\'','').replace('\']',''))
-    
-    
-    if 'delid' in urlGets:
-        delid=str(urlGets['delid']).replace('[\'','').replace('\']','')
-        cur.execute("DELETE FROM files WHERE id_my = "+delid)
-        cur.execute("DELETE FROM myarttable WHERE id = "+delid)
-        myconn.commit()
-    if 'textId' in urlGets and 'textEd1' in urlGets and 'textEd2' in urlGets and 'textEd3' in urlGets:
-        textId=str(urlGets['textId']).replace('[\'','').replace('\']','')
-        textEd1=str(urlGets['textEd1']).replace('[\'','').replace('\']','')
-        textEd2=str(urlGets['textEd2']).replace('[\'','').replace('\']','')
-        textEd3=str(urlGets['textEd3']).replace('[\'','').replace('\']','')
-       # print(textId, textEd1, textEd2, textEd3)
-        cur.execute("UPDATE myarttable SET text='"+textEd1+"', description='"+textEd2+"', keywords='"+textEd3+"' WHERE id = "+textId)    
-        myconn.commit()  
-# конец обновления, удаления строки из БД
-
-
+# работа с базой данных.
 import mysql.connector
-myconn = mysql.connector.connect(host = 'localhost', user = 'root', passwd = '', db = 'test', charset='utf8', use_unicode = True)
+myconn = mysql.connector.connect(host = address, port = port, user = login, passwd = password, db = '', charset='cp1251', use_unicode = True)
 cur = myconn.cursor()
-cur.execute("SET NAMES utf8;")
-cur.execute("USE test;")
-try: 
-    cur.execute("SELECT * FROM myarttable WHERE id>14 ORDER BY id DESC;")
-    result = cur.fetchall()
-    for line in result:
-        print('<tr>')
-        iR=0
-        for cell in line:
-            sCellNew = str(str(cell).strip().encode('utf-8'), 'cp1251')
-            sNewView = '<td title="Edit"><a href="#" class="js-open-modal" data-modal="1" id=\"id'+str(iR)+'_' + str(line[0]).strip() + '">' + sCellNew + '</a></td>'
-            print(sNewView);
-            iR+=1
-        sNewView = '<td class="cellDel" title="Delete"><a href="index.py?delid=' + str(line[0]).strip() + '"><img src="image/delete2.png"></a></td>'
-        print(sNewView);
-        print('</tr>');
-except: 
-    myconn.rollback() 
- 
-myconn.close() 
+cur.execute("SET NAMES utf8")
+cur.execute("USE test")
 
+if update != '':
+    try:
+        sql=''; '''"UPDATE "+update+" SET "+pmP+"='"+pmV+"' WHERE ";
+	
+        i=0;
+        while cgi['pP'+i.to_s] != ''
+            sql += cgi['pP'+i.to_s]+"= '"+cgi['pV'+i.to_s]+"' AND "
+            i+=1
+        end
+        sql += "1=1";'''
+        print(sql)
+        
+        cur.execute(sql)
+        myconn.commit()
+    except: 
+        myconn.rollback() 
+
+
+# список баз данных на 1 экз. сервера.
+if isGetBases != '':
+    try:
+        print("<!DOCTYPE html><html><head></head><body><div id='iTableGet'>")
+        cur.execute("SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA")
+        result = cur.fetchall()
+        for line in result:
+            for cell in line:
+                print('<div>'+str(cell)+'</div>')
+        print("</div><div id='iListStatus'>good</div></body></html>")
+    except: 
+        myconn.rollback() 
+# список таблиц.
+if base != '':
+    try:
+        print("<!DOCTYPE html><html><head></head><body><div id='iTableGet'>")
+        cur.execute("SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA='"+base+"'")
+        result = cur.fetchall()
+        for line in result:
+            for cell in line:
+                print('<li><div class="nav_point">'+str(cell)+'</div></li>')
+        print("</div><div id='iListStatus'>good</div></body></html>")
+    except: 
+        myconn.rollback() 
+# список столбцов и строк.
+if rows != '':
+    try:
+        print("<!DOCTYPE html><html><head></head><body><div id='iTableGet'>")
+        cur.execute("SHOW COLUMNS FROM "+rows)
+        print("<table><tr>")
+        iCountCols=0
+        result = cur.fetchall()
+        for line in result:
+            iCountCols+=1
+            print('<td>'+str(line[0])+'</td>')
+        print("</tr>")
+        
+        cur.execute("SELECT COUNT(*) AS Cnt FROM "+rows)
+        iCountRows=0
+        result = cur.fetchall()
+        for line in result:
+            iCountRows = int(line[0])
+
+        if iCountRows > 0:
+            cur.execute("SELECT * FROM "+rows+" LIMIT "+top)
+            result = cur.fetchall()
+            for line in result:
+                print('<tr>')
+                for cell in line:
+                    print('<td>'+str(cell)+'</td>')
+                print('<tr>')
+
+        print("</table>")
+        print("</div><div id='iCountCols'>"+str(iCountCols)+"</div>")
+        print("<div id='iCountRows'>"+str(iCountRows)+"</div>")
+        print("<div id='iListStatus'>good</div></body></html>")
+    except:
+        myconn.rollback()
+myconn.close()
