@@ -44,13 +44,13 @@ if update != '':
 # список баз данных на 1 экз. сервера.
 if isGetBases != '':
     try:
-        print("<!DOCTYPE html><html><head></head><body><div id='iTableGet'>")
+        sOut="<!DOCTYPE html><html><head></head><body><div id='iTableGet'>"
         cur.execute("SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA")
         result = cur.fetchall()
         for line in result:
             for cell in line:
-                print('<div>'+str(cell)+'</div>')
-        print("</div><div id='iListStatus'>good</div></body></html>")
+                sOut+='<div>'+str(cell)+'</div>'
+        print(sOut+"</div><div id='iListStatus'>good</div></body></html>")
     except: 
         myconn.rollback() 
 # список таблиц.
