@@ -85,7 +85,7 @@ table tr:nth-child(n+2):hover {
 	font-weight: bold;
 }
 
-/* цвета таблиц от языка */
+/* цвета таблиц для языков */
 .php tr:first-child { 
 	background: #4F5B93;
 }
@@ -113,6 +113,15 @@ table tr:nth-child(n+2):hover {
 .python tr:nth-child(n+2):hover {
 	background: #2080cd;
 }
+.ruby tr:first-child { 
+	background: #880f06;
+}
+.ruby tr:nth-child(n+2) {
+	background: #d64027; 
+}
+.ruby tr:nth-child(n+2):hover {
+	background: #b41502;
+}
 /* цвета справа от выбора языка */
 .php_bt {
     background: #4F5B93;
@@ -122,6 +131,9 @@ table tr:nth-child(n+2):hover {
 }
 .python_bt {
     background: #19629e;
+}
+.ruby_bt {
+	background: #880f06;
 }
 
 td {

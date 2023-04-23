@@ -4,8 +4,9 @@ tBase.addEventListener('change', function () {
 	var aPorts = [3306,1433];
 	tPort.value = aPorts[tBase.selectedIndex];
 });
-let aLangFile = ['pdo.php','mysqli.php','perl.pl','python.py'];
-let aLangColor = ['php_bt','php_bt','perl_bt','python_bt'];
+let aLangFile = ['pdo.php','mysqli.php','dbi.pl','python.py', 'ruby.rb'];
+let aLangColor = ['php_bt','php_bt','perl_bt','python_bt','ruby_bt'];
+let aLangColorTable = ['php','php','perl','python','ruby'];
 // установка индикатора цвета справа от языка независимо ни от чего.
 SetColorIndicator();
 function SetColorIndicator() {
@@ -134,28 +135,20 @@ console.log(iActBase);
 			var actNav = document.getElementsByClassName('nav_point')[i];
 			sTable = actNav.innerHTML;
 			sBase = document.getElementById('iBase'+iActBase).innerHTML;
-
 			newDiv.innerHTML = '<p id="tblHeader'+nBlock+'">'+tLanguage.value+': '+sBase+'.'+sTable+' (Loading...)</p>';
-	
-////	
 
-	sRequest = './'+GetLangFile()+'?rows='+sBase+'.'+sTable+'&base='+sBase+'&top='+tTop.value+'&type='+tBase.value+'&address='+tServ.value+'&port='+tPort.value+'&login='+tLogin.value+'&password='+tPassword.value;
-	newDiv.innerHTML += '<table id="table'+nBlock+'">&nbsp;</table>';
-	GetDyncArray(sRequest, nBlock);
-////
+			sRequest = './'+GetLangFile()+'?rows='+sBase+'.'+sTable+'&base='+sBase+'&top='+tTop.value+'&type='+tBase.value+'&address='+tServ.value+'&port='+tPort.value+'&login='+tLogin.value+'&password='+tPassword.value;
+			newDiv.innerHTML += '<table id="table'+nBlock+'">&nbsp;</table>';
+			GetDyncArray(sRequest, nBlock);
 
 			CloseButtonBlock(nBlock);
 			newTable = document.getElementById('table'+nBlock);
 			newTable.classList = '';
 			var inxLang = tLanguage.selectedIndex;
-			if (inxLang <= 1) newTable.classList.add('php');
-			if (inxLang == 2) newTable.classList.add('perl');
-			if (inxLang == 3) newTable.classList.add('python');
-			
+			newTable.classList.add(aLangColorTable[inxLang]);
 			
 			nBlock++;
-
-			}
+		}
 		}(i, iActBase);
 	}
 
