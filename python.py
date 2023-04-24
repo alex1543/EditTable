@@ -31,7 +31,7 @@ if query_string is not None:
     
 # работа с базой данных.
 import mysql.connector
-myconn = mysql.connector.connect(host = address, port = port, user = login, passwd = password, db = '', charset='cp1251', use_unicode = True)
+myconn = mysql.connector.connect(host = address, port = port, user = login, passwd = password, db = '', charset='utf8', use_unicode = True)
 cur = myconn.cursor()
 cur.execute("SET NAMES utf8")
 cur.execute("USE test")
@@ -101,7 +101,8 @@ if rows != '':
             for line in result:
                 print('<tr>')
                 for cell in line:
-                    print('<td>'+str(cell)+'</td>')
+                    sCellNew = str(str(cell).strip().encode('utf-8'), 'cp1251')
+                    print('<td>'+sCellNew+'</td>')
                 print('<tr>')
 
         print("</table>")
