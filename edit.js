@@ -23,16 +23,12 @@ function GetLangFile() {
 	return aLangFile[tLanguage.selectedIndex];
 }
 
-// подгрузка списка баз данных по кнопке Check.
-tCheck.addEventListener('click', function () {
-
-	var iListBaseHead = document.getElementById('iListBaseHead');
-	iListBaseHead.style.display = 'block';
-	iListBaseHead.innerHTML = 'Loading...';
-
+// одна фукция для получения списка баз данных и таблиц.
+let iActBase=0;
+function GetListHTML(oListNew, sRequest, fOut) {
 	var iframe = document.createElement('iframe');
-	iListBaseHead.after(iframe);
-	iframe.src = './'+GetLangFile()+'?bases=yes&type='+tBase.value+'&address='+tServ.value+'&port='+tPort.value+'&login='+tLogin.value+'&password='+tPassword.value;
+	oListNew.after(iframe);
+	iframe.src = sRequest;
 console.log(iframe.src);
 
 	var innerDoc = iframe.contentDocument;
@@ -44,13 +40,13 @@ console.log(iframe.src);
 			var innerDoc = iframe.contentDocument;
 			if ((innerDoc != undefined) && (innerDoc.getElementById('iListStatus') != undefined)) {
 				var iTableGet = innerDoc.getElementById('iTableGet');
-				iListBaseHead.innerHTML = iTableGet.innerHTML;
+				oListNew.innerHTML = iTableGet.innerHTML;
 				iframe.remove();
-				GetListTable();
+				fOut();
 			} else {
 
 				if (iLoadPos >= 1500) {
-					iListBaseHead.innerHTML = 'Данные не были получены за отведенное время (5 сек.). Проверьте связь в локальной сети. Повторите попытку позже. Обратитесь к системному администратору.';
+					oListNew.innerHTML = 'Данные не были получены за отведенное время (5 сек.). Проверьте связь в локальной сети. Повторите попытку позже. Обратитесь к системному администратору.';
 					iframe.remove();
 				} else {
 					iLoadPos++;
@@ -60,6 +56,15 @@ console.log(iframe.src);
 		}, 1);	
 	}
 	
+}
+// подгрузка списка баз данных по кнопке Check.
+tCheck.addEventListener('click', function () {
+	var iListBaseHead = document.getElementById('iListBaseHead');
+	iListBaseHead.style.display = 'block';
+	iListBaseHead.innerHTML = 'Loading...';
+
+	sRequest = './'+GetLangFile()+'?bases=yes&type='+tBase.value+'&address='+tServ.value+'&port='+tPort.value+'&login='+tLogin.value+'&password='+tPassword.value;
+	GetListHTML(iListBaseHead, sRequest, GetListTable);
 	
 	function GetListTable() {
 		var nBase = 0;
@@ -70,42 +75,12 @@ console.log(iframe.src);
 				mBase[i].id = 'iBase'+nBase;
 				mBase[i].onclick = function(i){
 				return function() {
-				console.log(mBase[i].innerHTML);
-				iListTableUL = document.getElementsByTagName('UL')[0];
-				iListTableUL.innerHTML = '<li><a href="index.html">Settings</a></li><hr />';
+					iActBase = i+1;
+					console.log(mBase[i].innerHTML);
+					iListTableUL = document.getElementsByTagName('UL')[0];
 
-				var iframe = document.createElement('iframe');
-				iListTableUL.after(iframe);
-				iframe.src = './'+GetLangFile()+'?tables='+mBase[i].innerHTML+'&type='+tBase.value+'&address='+tServ.value+'&port='+tPort.value+'&login='+tLogin.value+'&password='+tPassword.value;
-				console.log(iframe.src);
-
-				var innerDoc = iframe.contentDocument;
-				
-				var iLoadPos=0;
-				LoadListBase();
-				function LoadListBase() {
-					setTimeout(() => {
-						var innerDoc = iframe.contentDocument;
-						if ((innerDoc != undefined) && (innerDoc.getElementById('iListStatus') != undefined)) {
-							var iTableGet = innerDoc.getElementById('iTableGet');
-							iListTableUL.innerHTML += iTableGet.innerHTML;
-							iframe.remove();
-							GetShowTables(i+1);
-				//
-						} else {
-
-							if (iLoadPos >= 1500) {
-							//	iListTableUL.innerHTML += 'Данные не были получены за отведенное время (5 сек.). Проверьте связь в локальной сети. Повторите попытку позже. Обратитесь к системному администратору.';
-								iframe.remove();
-							} else {
-								iLoadPos++;
-								LoadListBase();
-							}
-						}
-					}, 1);	
-				}
-	
-	//
+					sRequest = './'+GetLangFile()+'?tables='+mBase[i].innerHTML+'&type='+tBase.value+'&address='+tServ.value+'&port='+tPort.value+'&login='+tLogin.value+'&password='+tPassword.value;
+					GetListHTML(iListTableUL, sRequest, GetShowTables);
 
 				}
 				}(i);
@@ -118,7 +93,9 @@ console.log(iframe.src);
 
 
 // открытие таблиц справа.
-function GetShowTables(iActBase) {
+function GetShowTables() {
+	iListTableUL = document.getElementsByTagName('UL')[0];
+	iListTableUL.innerHTML = '<li><a href="index.html">Settings</a></li><hr />' + iListTableUL.innerHTML;
 console.log(iActBase);
 	let nBlock = 0;
 	var mNav = document.getElementsByClassName('nav_point');
