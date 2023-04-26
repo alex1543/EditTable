@@ -313,3 +313,6 @@ textarea {
 /*	background: #5966a1;*/
 	font-weight: bold;
 }
+.dynamic {
+	display: none;
+}

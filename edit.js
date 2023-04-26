@@ -1,4 +1,5 @@
 
+let aSett = ['tBase', 'tServ', 'tPort', 'tLogin', 'tPassword', 'tLanguage', 'tTop'];
 // установка порта по умолчанию.
 tBase.addEventListener('change', function () {
 	var aPorts = [3306,1433];
@@ -91,13 +92,28 @@ tCheck.addEventListener('click', function () {
 	}
 });
 
+/*
+function GetFreeID(sPref) {
+	
+		alert(document.getElementById(sPref+20));
+
+	var lastID=0;
+	for (var posID=0; document.getElementById(sPref+String(posID)) != null; ++posID) {
+		console.log(document.getElementById(sPref+posID));
+		lastID = posID;
+	}
+	alert(lastID);
+	return lastID;
+}
+*/
+
+let nBlock = 0;
 
 // открытие таблиц справа.
 function GetShowTables() {
 	iListTableUL = document.getElementsByTagName('UL')[0];
 	iListTableUL.innerHTML = '<li><a href="index.html">Settings</a></li><hr />' + iListTableUL.innerHTML;
 console.log(iActBase);
-	let nBlock = 0;
 	var mNav = document.getElementsByClassName('nav_point');
 	for (var i = 0; i < mNav.length; ++i) {
 		mNav[i].onclick = function(i, iActBase){
@@ -106,6 +122,8 @@ console.log(iActBase);
 			var artBlock = document.getElementsByClassName('block')[mBlock.length-1];
 			var newDiv = document.createElement('div');
 			newDiv.classList.add('point');
+		//	nBlock = GetFreeID('block');
+			console.log('Free is '+nBlock);
 			newDiv.id = 'block'+nBlock;
 			artBlock.after(newDiv);
 				
@@ -116,6 +134,21 @@ console.log(iActBase);
 
 			sRequest = './'+GetLangFile()+'?rows='+sBase+'.'+sTable+'&base='+sBase+'&top='+tTop.value+'&type='+tBase.value+'&address='+tServ.value+'&port='+tPort.value+'&login='+tLogin.value+'&password='+tPassword.value;
 			newDiv.innerHTML += '<table id="table'+nBlock+'">&nbsp;</table>';
+			
+			// жесткая привязка настроек к каждой таблице для UPDATE.
+			var sSett = '<div class="dynamic">';
+			sSett += '<div id="nmLangFile'+nBlock+'">'+GetLangFile()+'</div>';
+			sSett += '<div id="nmBase'+nBlock+'">'+sBase+'</div>';
+			sSett += '<div id="nmTable'+nBlock+'">'+sTable+'</div>';
+			for (var iSett = 0; iSett < aSett.length; ++iSett) {
+				oneSett = document.getElementById(aSett[iSett]).value;
+				sSett += '<div id="'+aSett[iSett]+nBlock+'">'+oneSett+'</div>';
+				
+			}
+			sSett += '</div>';
+			
+			newDiv.innerHTML += sSett;
+			
 			GetDyncArray(sRequest, nBlock);
 
 			CloseButtonBlock(nBlock);
@@ -195,8 +228,17 @@ function GetDyncArray(sRequest, iTable) {
 									sRqPlus += '&pV'+i+'='+newTable.children[0].children[iRow].children[i].innerHTML;
 								}
 								//alert(sRqPlus);
+								
+								var updNmLangFile = document.getElementById('nmLangFile'+iTable).innerHTML;
+								var updNmBase = document.getElementById('nmBase'+iTable).innerHTML;
+								var updNmTable = document.getElementById('nmTable'+iTable).innerHTML;
+								var updBase = document.getElementById(aSett[0]+iTable).innerHTML;
+								var updServ = document.getElementById(aSett[1]+iTable).innerHTML;
+								var updPort = document.getElementById(aSett[2]+iTable).innerHTML;
+								var updLogin = document.getElementById(aSett[3]+iTable).innerHTML;
+								var updPassword = document.getElementById(aSett[4]+iTable).innerHTML;
 
-								sRequest = './'+GetLangFile()+'?update='+sBase+'.'+sTable+'&base='+sBase+'&type='+tBase.value+'&address='+tServ.value+'&port='+tPort.value+'&login='+tLogin.value+'&password='+tPassword.value+sRqPlus;
+								sRequest = './'+updNmLangFile+'?update='+updNmBase+'.'+updNmTable+'&base='+updNmBase+'&type='+updBase+'&address='+updServ+'&port='+updPort+'&login='+updLogin+'&password='+updPassword+sRqPlus;
 								var iframe = document.createElement('iframe');
 								document.getElementsByTagName('body')[0].after(iframe);
 								iframe.src = sRequest;
