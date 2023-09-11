@@ -8,6 +8,11 @@ try {
 	if ($_GET['type'] == 'MSSQL')
 		$pdoSet = new PDO('odbc:DRIVER=FreeTDS;TDS_Version=8.0;SERVERNAME='.$_GET['address'].';PORT='.$_GET['port'].';UID='.$_GET['login'].';PWD='.$_GET['password'].';');
 
+	if ($_GET['type'] == 'PostgreSQL')
+		$pdoSet = new PDO('pgsql:host='.$_GET['address'].';port='.$_GET['port'].';dbname=test', $_GET['login'], $_GET['password']);
+    if ($pdoSet) {
+          echo "Connected to the database successfully!";
+    }
 	
 	if (isset($_GET['tables'])) {
 		$pdoSet->query('USE '.$_GET['tables']);

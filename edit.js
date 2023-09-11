@@ -2,7 +2,7 @@
 let aSett = ['tBase', 'tServ', 'tPort', 'tLogin', 'tPassword', 'tLanguage', 'tTop'];
 // установка порта по умолчанию.
 tBase.addEventListener('change', function () {
-	var aPorts = [3306,1433];
+	var aPorts = [3306,1433,5432];
 	tPort.value = aPorts[tBase.selectedIndex];
 });
 let aLangFile = ['pdo.php','mysqli.php','dbi.pl','python.py', 'ruby.rb'];
