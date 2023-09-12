@@ -4,21 +4,23 @@ try {
 	if ($_GET['type'] == 'MySQL') {
 		$pdoSet = new PDO('mysql:host='.$_GET['address'].';port:'.$_GET['port'], $_GET['login'], $_GET['password']);
 		$pdoSet->query('SET NAMES utf8');
+
+		if (isset($_GET['tables'])) $pdoSet->query('USE '.$_GET['tables']);
+		if (isset($_GET['base'])) $pdoSet->query('USE '.$_GET['base']);
 	}
-	if ($_GET['type'] == 'MSSQL')
+	if ($_GET['type'] == 'MSSQL') {
 		$pdoSet = new PDO('odbc:DRIVER=FreeTDS;TDS_Version=8.0;SERVERNAME='.$_GET['address'].';PORT='.$_GET['port'].';UID='.$_GET['login'].';PWD='.$_GET['password'].';');
 
-	if ($_GET['type'] == 'PostgreSQL')
-		$pdoSet = new PDO('pgsql:host='.$_GET['address'].';port='.$_GET['port'].';dbname=test', $_GET['login'], $_GET['password']);
-    if ($pdoSet) {
-          echo "Connected to the database successfully!";
-    }
-	
-	if (isset($_GET['tables'])) {
-		$pdoSet->query('USE '.$_GET['tables']);
+		if (isset($_GET['tables'])) $pdoSet->query('USE '.$_GET['tables']);
+		if (isset($_GET['base'])) $pdoSet->query('USE '.$_GET['base']);
 	}
-	if (isset($_GET['base'])) {
-		$pdoSet->query('USE '.$_GET['base']);
+
+	if ($_GET['type'] == 'PostgreSQL') {
+		$dbname = "postgres";
+		if (isset($_GET['tables'])) $dbname = $_GET['tables'];
+		if (isset($_GET['base'])) $dbname = $_GET['base'];
+
+		$pdoSet = new PDO('pgsql:host='.$_GET['address'].';port='.$_GET['port'].';dbname='.$dbname, $_GET['login'], $_GET['password']);
 	}
 } catch (PDOException $e) {
 	print "Error!: " . $e->getMessage() . "<br/>";
@@ -50,6 +52,8 @@ if (isset($_GET['bases'])) {
 		$sql = "SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA";
 	if ($_GET['type'] == 'MSSQL')
 		$sql = "EXEC sp_databases";
+	if ($_GET['type'] == 'PostgreSQL')
+		$sql = "SELECT datname FROM pg_database";
 	
 	$stmt = $pdoSet->query($sql);
 	$resultMF = $stmt->fetchAll(PDO::FETCH_NUM);
@@ -64,6 +68,8 @@ if (isset($_GET['tables'])) {
 		$sql = "SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA='".$_GET['tables']."'";
 	if ($_GET['type'] == 'MSSQL')
 		$sql = "SELECT TABLE_SCHEMA+'.'+TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_CATALOG='".$_GET['tables']."'";
+	if ($_GET['type'] == 'PostgreSQL')
+		$sql = "SELECT table_name FROM information_schema.tables WHERE table_schema NOT IN ('information_schema', 'pg_catalog') AND table_schema IN('public', 'myschema');";
 
 	$stmt = $pdoSet->query($sql);
 	$resultMF = $stmt->fetchAll(PDO::FETCH_NUM);
@@ -72,35 +78,47 @@ if (isset($_GET['tables'])) {
 	GetDOM($divTables);
 	die();
 }
-// список столбцов и строк.
-if (isset($_GET['rows'])) {
+// выгрузка таблицы.
+if ((isset($_GET['rows'])) && (isset($_GET['base']))) {
 	?><!DOCTYPE html><html><head></head><body><div id='iTableGet'><?php
+	// список столбцов.
 	if ($_GET['type'] == 'MySQL')
-		$sql_cols = "SHOW COLUMNS FROM ".$_GET['rows'];
+		$sql_cols = "SHOW COLUMNS FROM ".$_GET['base'].".".$_GET['rows'];
 	if ($_GET['type'] == 'MSSQL')
-		$sql_cols = "SELECT COLUMN_NAME AS Field FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_CATALOG+'.'+TABLE_SCHEMA+'.'+TABLE_NAME = '".$_GET['rows']."'";
+		$sql_cols = "SELECT COLUMN_NAME AS Field FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_CATALOG+'.'+TABLE_SCHEMA+'.'+TABLE_NAME = '".$_GET['base'].".".$_GET['rows']."'";
+	if ($_GET['type'] == 'PostgreSQL')
+		$sql_cols = "SELECT column_name AS Field FROM information_schema.columns WHERE table_schema='public' AND table_catalog = '".$_GET['base']."' AND table_name='".$_GET['rows']."'";
 	
 	echo '<table><tr>';
 	$stmt = $pdoSet->query($sql_cols);
 	$resultMF = $stmt->fetchAll();
-	for ($i = 0; $i < Count($resultMF); ++$i) echo '<td>'.$resultMF[$i]["Field"].'</td>';
+	for ($i = 0; $i < Count($resultMF); ++$i) echo '<td>'.$resultMF[$i]["field"].'</td>';
 	echo '</tr>';
 	
+	// определние кол-ва строк.
 	$iCountCols = Count($resultMF);
-	$stmt = $pdoSet->query("SELECT COUNT(*) FROM ".$_GET['rows']);
+	if (($_GET['type'] == 'MySQL') || ($_GET['type'] == 'MSSQL'))
+		$stmt = $pdoSet->query("SELECT COUNT(*) FROM ".$_GET['base'].".".$_GET['rows']);
+	if ($_GET['type'] == 'PostgreSQL')
+		$stmt = $pdoSet->query("SELECT COUNT(*) FROM ".$_GET['rows']);
+
 	$resultMF = $stmt->fetchAll();
 	$iCountRows = $resultMF[0][0];
+	//echo $iCountRows;
 
 	if ($iCountRows > 0) {
+		// выгрузка строк.
 		if ($_GET['type'] == 'MySQL')
-			$sql = "SELECT * FROM ".$_GET['rows']." LIMIT ".$_GET['top'];
+			$sql = "SELECT * FROM ".$_GET['base'].".".$_GET['rows']." LIMIT ".$_GET['top'];
 		if ($_GET['type'] == 'MSSQL')
-			$sql = "SELECT TOP ".$_GET['top']." * FROM ".$_GET['rows'];
+			$sql = "SELECT TOP ".$_GET['top']." * FROM ".$_GET['base'].".".$_GET['rows'];
+		if ($_GET['type'] == 'PostgreSQL')
+			$sql = "SELECT * FROM ".$_GET['rows']." LIMIT ".$_GET['top'];
 
 		$stmt = $pdoSet->query($sql);
 		// не все MSSQL поддерживают TOP.
 		if ((!$stmt) && ($_GET['type'] == 'MSSQL'))
-			$sql = "SELECT * FROM ".$_GET['rows'];
+			$sql = "SELECT * FROM ".$_GET['base'].".".$_GET['rows'];
 
 		$resultMF = $stmt->fetchAll(PDO::FETCH_NUM);
 		// перебор двухмерного массива [][] с числ. индексами.
