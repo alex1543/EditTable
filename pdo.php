@@ -92,7 +92,7 @@ if ((isset($_GET['rows'])) && (isset($_GET['base']))) {
 	echo '<table><tr>';
 	$stmt = $pdoSet->query($sql_cols);
 	$resultMF = $stmt->fetchAll();
-	for ($i = 0; $i < Count($resultMF); ++$i) echo '<td>'.$resultMF[$i]["field"].'</td>';
+	for ($i = 0; $i < Count($resultMF); ++$i) echo '<td>'.$resultMF[$i][0].'</td>';
 	echo '</tr>';
 	
 	// определние кол-ва строк.
