@@ -1,4 +1,4 @@
-#!c:/Users/днс/AppData/Local/Programs/Python/Python38/python.exe
+#!c:/Users/alex/AppData/Local/Programs/Python/Python38/python.exe
 print("Content-type: text/html; charset=utf-8\n\n")
 # разбор параметров GET.
 import os

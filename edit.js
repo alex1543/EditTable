@@ -132,7 +132,11 @@ console.log(iActBase);
 			sBase = document.getElementById('iBase'+iActBase).innerHTML;
 			newDiv.innerHTML = '<p id="tblHeader'+nBlock+'">'+tLanguage.value+': '+sBase+'.'+sTable+' (Loading...)</p>';
 
+		if (tLanguage.selectedIndex > 0) { // fix no PDO.
+			sRequest = './'+GetLangFile()+'?rows='+sBase+'.'+sTable+'&base='+sBase+'&top='+tTop.value+'&type='+tBase.value+'&address='+tServ.value+'&port='+tPort.value+'&login='+tLogin.value+'&password='+tPassword.value;
+		} else {
 			sRequest = './'+GetLangFile()+'?rows='+sTable+'&base='+sBase+'&top='+tTop.value+'&type='+tBase.value+'&address='+tServ.value+'&port='+tPort.value+'&login='+tLogin.value+'&password='+tPassword.value;
+		}
 			newDiv.innerHTML += '<table id="table'+nBlock+'">&nbsp;</table>';
 			
 			// жесткая привязка настроек к каждой таблице для UPDATE.
