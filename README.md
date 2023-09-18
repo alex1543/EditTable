@@ -1,7 +1,7 @@
 # EditTable
 Редактор таблиц, главная фишка которого в том, что можно редактировать таблицы на разных скриптовых языках PHP, Perl, Python, Ruby и т.д. (Go, Lua, Elixir, Dart, Node.js, потом будет доделано ...).
 
-Все языки поддерживают MariaDB/MySQL, то только PHP (PDO) поддерживает три базы данных: MySQL, Microsoft SQL, PostgreSQL.
+Все языки поддерживают MariaDB/MySQL, но только PHP (PDO) поддерживает три базы данных: MySQL, Microsoft SQL, PostgreSQL.
 
 Главный экран:
 
