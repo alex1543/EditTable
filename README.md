@@ -15,7 +15,7 @@
 
 ![image](https://user-images.githubusercontent.com/10297748/233696115-d4051d01-3a54-4748-a651-1cc3be7bd8c8.png)
 
-Сайт гарантированно работает на ApacheFriends XAMPP Version 7.4.27 с предустановленным драйвером PDO и PHP версии 7.4.27. Для работы с PostgreSQL необходимо в файле php.ini найти строку 'extension=pdo_mysql' и после добавить новую строку: extension=php_pdo_pgsql
+Сайт гарантированно работает на ApacheFriends XAMPP Version 7.4.27 с предустановленным драйвером PDO и PHP версии 7.4.27. Найти и раскомментировать строку: ';extension=pdo_pgsql' в файле php.ini для работы с PostgreSQL.
 
 Сайт может работать и на Perl. Для этого необходимо установить strawberry-perl-5.32.1.1-64bit и добавить в переменную среды Path новый каталог C:\Strawberry\perl\bin\, куда был установлен Perl.
 
